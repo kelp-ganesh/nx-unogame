@@ -1,0 +1,53 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Point = exports.Value = exports.Color = exports.PendingActonType = void 0;
+var PendingActonType;
+(function (PendingActonType) {
+    PendingActonType["drawTwo"] = "DRAW_TWO";
+    PendingActonType["none"] = "NONE";
+    PendingActonType["skip"] = "SKIP";
+})(PendingActonType || (exports.PendingActonType = PendingActonType = {}));
+var Color;
+(function (Color) {
+    Color["red"] = "RED";
+    Color["green"] = "GREEN";
+    Color["blue"] = "BLUE";
+    Color["yellow"] = "YELLOW";
+    Color["wild"] = "WILD";
+})(Color || (exports.Color = Color = {}));
+var Value;
+(function (Value) {
+    Value["zero"] = "0";
+    Value["one"] = "1";
+    Value["two"] = "2";
+    Value["three"] = "3";
+    Value["four"] = "4";
+    Value["five"] = "5";
+    Value["six"] = "6";
+    Value["seven"] = "7";
+    Value["eight"] = "8";
+    Value["nine"] = "9";
+    Value["skip"] = "SKIP";
+    Value["reverse"] = "REVERSE";
+    Value["drawTwo"] = "DRAW_TWO";
+    Value["wild"] = "WILD";
+    Value["wildDrawFour"] = "WILD_DRAW_FOUR";
+})(Value || (exports.Value = Value = {}));
+var Point;
+(function (Point) {
+    Point[Point["zero"] = 0] = "zero";
+    Point[Point["one"] = 1] = "one";
+    Point[Point["two"] = 2] = "two";
+    Point[Point["three"] = 3] = "three";
+    Point[Point["four"] = 4] = "four";
+    Point[Point["five"] = 5] = "five";
+    Point[Point["six"] = 6] = "six";
+    Point[Point["seven"] = 7] = "seven";
+    Point[Point["eight"] = 8] = "eight";
+    Point[Point["nine"] = 9] = "nine";
+    Point[Point["skip"] = 20] = "skip";
+    Point[Point["reverse"] = 20] = "reverse";
+    Point[Point["drawTwo"] = 20] = "drawTwo";
+    Point[Point["wild"] = 50] = "wild";
+    Point[Point["wildDrawFour"] = 50] = "wildDrawFour";
+})(Point || (exports.Point = Point = {}));
