@@ -88,6 +88,10 @@ export class GameRoomComponent implements OnInit {
     this.gameStateSub = this.socketService.onGameState().subscribe({
       next: (data) => {
         this.gameState.set(data);
+        for(let i=0;i<this.gameState().myCards.length;i++)
+        {
+          console.log("color",this.gameState().myCards[i].color,"value",this.gameState().myCards[i].value);
+        }
         if (this.gameState().isEnd) {
           this.socketService.gameEnds();
         }
@@ -142,17 +146,17 @@ export class GameRoomComponent implements OnInit {
     this.socketService.onChallenge();
   }
 
-  getColorClass(color: string): string {
+  getColorClass(color: Color): string {
     switch (color) {
-      case 'RED':
+      case Color.RED:
         return 'bg-red-600';
-      case 'BLUE':
+      case Color.BLUE:
         return 'bg-blue-600';
-      case 'GREEN':
+      case Color.GREEN:
         return 'bg-green-600';
-      case 'YELLOW':
+      case Color.YELLOW:
         return 'bg-yellow-600';
-      case 'BLACK':
+      case Color.WILD:
         return 'bg-slate-800 border-2 border-white';
       default:
         return 'bg-gray-400';

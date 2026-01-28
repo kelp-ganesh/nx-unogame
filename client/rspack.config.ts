@@ -18,7 +18,7 @@ export default createConfig(
           input: './public',
         },
       ],
-      styles: ['./src/styles.scss'],
+      styles: ['./src/styles.css'],
       devServer: {},
     },
   },
