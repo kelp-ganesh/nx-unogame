@@ -49,6 +49,7 @@ export default createConfig(
         extractLicenses: false,
         sourceMap: true,
         namedChunks: true,
+        verbose: true,
         devServer: {},
       },
     },
