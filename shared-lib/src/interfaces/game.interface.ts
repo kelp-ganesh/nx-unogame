@@ -1,8 +1,8 @@
 import {
   Color,
   Value,
-  PendingActonType,
 } from '../enums/index';
+import { IPendingAction } from './socket.interface';
 
 export interface ICard {
   id: string;
@@ -24,7 +24,7 @@ export interface IUnoGame {
   currentPlayerIndex: number;
   direction: 1 | -1;
   activeContext: Color;
-  pendingAction: { pendingActionType: PendingActonType; count: number };
+  pendingAction: IPendingAction;
   cardDrawn: boolean;
   drawnCard?: ICard;
   allowChangeContextPlayerIndex: number;

@@ -1,4 +1,4 @@
-import { Color, PendingActonType, Value, type IPlayer, type IUnoGame } from '@unogame/shared-lib';
+import { Color, IPendingAction, PendingActionType, Value, type IPlayer, type IUnoGame } from '@unogame/shared-lib';
 import { Card } from './card.js';
 import { Deck } from './deck.js';
 import { Player } from './player.js';
@@ -13,7 +13,7 @@ export class UnoGame {
   currentPlayerIndex: number = 0;
   direction: 1 | -1 = 1;
   activeContext: Color;
-  pendingAction: { pendingActionType: PendingActonType; count: number };
+  pendingAction: IPendingAction;
 
   //drawn card in the turn which should be equed to false after each turn
   cardDrawn: boolean = false;
@@ -27,7 +27,7 @@ export class UnoGame {
     this.id = players[0]!.userId;
     this.players = players;
     this.direction = 1;
-    this.pendingAction = { pendingActionType: PendingActonType.none, count: 0 };
+    this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
     this.name = name;
 
     //deck init
@@ -56,13 +56,13 @@ export class UnoGame {
 
   timeExceeded() {
     this.cardDrawn = false;
-    if (this.pendingAction.pendingActionType === PendingActonType.drawTwo) {
+    if (this.pendingAction.Type === PendingActionType.DRAW_TWO) {
       for (let i = 0; i < this.pendingAction.count; i++) {
         this.players[this.currentPlayerIndex]!.myCards.push(this.drawPile.pop()!);
       }
       this.activeContext = this.discardPile[0]!.color;
     }
-    this.pendingAction = { pendingActionType: PendingActonType.none, count: 0 };
+    this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
 
     this.currentPlayerIndex =
       (((this.currentPlayerIndex + this.direction) % this.players.length) + this.players.length) %
@@ -71,11 +71,11 @@ export class UnoGame {
 
   isValidMatch(card1: Card, card2: Card) {
     if (
-      (this.pendingAction.pendingActionType === PendingActonType.drawTwo &&
-        card1.value === Value.drawTwo) ||
+      (this.pendingAction.Type === PendingActionType.DRAW_TWO &&
+        card1.value === Value.DRAW_TWO) ||
       card1.color === this.activeContext ||
       card1.value === card2.value ||
-      card1.color === 'WILD'
+      card1.color === Color.WILD
     ) {
       return true;
     } else {
@@ -97,7 +97,7 @@ export class UnoGame {
   }
 
   cardSubmitted(card: Card) {
-    if (card.value === Value.skip) {
+    if (card.value === Value.SKIP) {
       //currentINdex+=2;
       this.currentPlayerIndex =
         (((this.currentPlayerIndex + this.direction * 2) % this.players.length) +
@@ -106,7 +106,7 @@ export class UnoGame {
       this.activeContext = card.color;
       this.discardPile.unshift(card);
       return 'skip';
-    } else if (card.value === Value.reverse) {
+    } else if (card.value === Value.REVERSE) {
       //dir=dir*-1;
       this.direction = (this.direction * -1) as 1 | -1;
       this.currentPlayerIndex =
@@ -115,37 +115,37 @@ export class UnoGame {
       this.discardPile.unshift(card);
       this.activeContext = card.color;
       return 'reverse';
-    } else if (card.value === Value.drawTwo) {
-      if (this.discardPile[0]?.value == Value.drawTwo) {
+    } else if (card.value === Value.DRAW_TWO) {
+      if (this.discardPile[0]?.value == Value.DRAW_TWO) {
         const initialCount = this.pendingAction.count;
         this.pendingAction = {
-          pendingActionType: PendingActonType.drawTwo,
+          Type: PendingActionType.DRAW_TWO,
           count: initialCount + 2,
         };
       } else {
-        this.pendingAction = { pendingActionType: PendingActonType.drawTwo, count: 2 };
+        this.pendingAction = { Type: PendingActionType.DRAW_TWO, count: 2 };
       }
 
       this.currentPlayerIndex =
         (((this.currentPlayerIndex + this.direction) % this.players.length) + this.players.length) %
         this.players.length;
       //so no one can sub card on previos active context
-      this.activeContext = Color.wild;
+      this.activeContext = Color.WILD;
       this.discardPile.unshift(card);
 
       return 'draw-two';
-    } else if (card.value === Value.wild) {
+    } else if (card.value === Value.WILD) {
       //set active context to chosen color
       this.discardPile.unshift(card);
-      this.pendingAction = { pendingActionType: PendingActonType.none, count: 0 };
+      this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
       this.allowChangeContextPlayerIndex = this.currentPlayerIndex;
       //this.currentPlayerIndex=(this.currentPlayerIndex+1*this.direction)%this.players.length;
       return 'wild';
-    } else if (card.value === Value.wildDrawFour) {
+    } else if (card.value === Value.WILD_DRAW_FOUR) {
       //set active context to chosen color
       this.allowChangeContextPlayerIndex = this.currentPlayerIndex;
       this.discardPile.unshift(card);
-      this.pendingAction = { pendingActionType: PendingActonType.drawTwo, count: 4 };
+      this.pendingAction = { Type: PendingActionType.DRAW_TWO, count: 4 };
 
       return 'wild-draw-four';
     }
@@ -153,19 +153,19 @@ export class UnoGame {
 
   changeActiveContext(color: Color, player: Player) {
     if (
-      (player.index === this.currentPlayerIndex && this.discardPile[0]!.value === Value.wild) ||
-      this.discardPile[0]!.value === Value.wildDrawFour
+      (player.index === this.currentPlayerIndex && this.discardPile[0]!.value === Value.WILD) ||
+      this.discardPile[0]!.value === Value.WILD_DRAW_FOUR
     ) {
       this.activeContext = color;
       this.allowChangeContextPlayerIndex = -1;
       this.discardPile[0]!.color = color;
     }
-    if (this.pendingAction.pendingActionType == PendingActonType.none) {
+    if (this.pendingAction.Type == PendingActionType.NONE) {
       this.currentPlayerIndex =
         (((this.currentPlayerIndex + this.direction) % this.players.length) + this.players.length) %
         this.players.length;
     }
-    if (this.pendingAction.pendingActionType === PendingActonType.drawTwo) {
+    if (this.pendingAction.Type === PendingActionType.DRAW_TWO) {
       this.currentPlayerIndex =
         (((this.currentPlayerIndex + this.direction) % this.players.length) + this.players.length) %
         this.players.length;
@@ -176,7 +176,7 @@ export class UnoGame {
       this.currentPlayerIndex =
         (((this.currentPlayerIndex + this.direction) % this.players.length) + this.players.length) %
         this.players.length;
-      this.pendingAction = { pendingActionType: PendingActonType.none, count: 0 };
+      this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
     }
   }
 
@@ -190,11 +190,11 @@ export class UnoGame {
             this.isEnd = true;
           }
           if (
-            card.value !== Value.skip &&
-            card.value !== Value.reverse &&
-            card.value !== Value.drawTwo &&
-            card.value !== Value.wild &&
-            card.value !== Value.wildDrawFour
+            card.value !== Value.SKIP &&
+            card.value !== Value.REVERSE &&
+            card.value !== Value.DRAW_TWO &&
+            card.value !== Value.WILD &&
+            card.value !== Value.WILD_DRAW_FOUR
           ) {
             this.activeContext = card.color;
             this.discardPile.unshift(card);
@@ -215,11 +215,11 @@ export class UnoGame {
   }
 
   checkPendingAction() {
-    if (this.pendingAction.pendingActionType === PendingActonType.drawTwo) {
+    if (this.pendingAction.Type === PendingActionType.DRAW_TWO) {
       for (let i = 0; i < this.pendingAction.count; i++) {
         this.players[this.currentPlayerIndex]!.myCards.push(this.drawPile.pop()!);
       }
-      this.pendingAction = { pendingActionType: PendingActonType.none, count: 0 };
+      this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
     }
   }
   onChallenge() {

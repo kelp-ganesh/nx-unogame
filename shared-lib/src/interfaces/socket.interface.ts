@@ -1,11 +1,11 @@
-import type { Color, PendingActonType } from '../enums/index';
+import type { Color, PendingActionType } from "../enums/index";
 import type {
   ICard,
   IOpponent,
   IPlayer,
   IUnoGame,
   IWaitingRoom,
-} from './game.interface';
+} from "./game.interface";
 
 export interface IJoinRoom {
   roomId: string;
@@ -28,11 +28,6 @@ export interface IJoinLobby {
   lobby: IWaitingRoom[];
   player?: IPlayer;
   sockets: string[] | undefined;
-}
-
-//no need
-export interface IROUTE_GAMEPAGE {
-  msg: string;
 }
 
 export interface IGameResult {
@@ -61,24 +56,15 @@ export interface ISubmitCard {
   card: ICard;
 }
 
-export type IDrawCard = {};
-
-//response after submiting card
-//no need
-// export type END_TURN = {
-//   players: PlayerType[];
-//   currentPlayerIndex: number;
-//   direction: 1 | -1;
-//   drawPile: CardType[];
-//   discardPile: CardType[];
-//   activeContext: string;
-//   pendingAction: { Type: "drawTwo" | "none" | "skip"; count: number };
-// };
+export interface IPendingAction {
+  Type: PendingActionType;
+  count: number;
+}
 
 export interface IDrawResponse {
   players: IPlayer[];
   drawPile: ICard[];
-  pendingAction: { Type: PendingActonType; count: number };
+  pendingAction: IPendingAction;
 }
 
 export interface IUpdatedGameState {

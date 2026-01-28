@@ -3,12 +3,12 @@ import { Card } from './card.js';
 
 class Deck implements IDeck {
   cards: Card[] = [];
-  colors: Color[] = [Color.red, Color.blue, Color.green, Color.yellow, Color.wild];
+  colors: Color[] = [Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.WILD];
 
   constructor() {
     //adding 0 value coards
     for (let i = 0; i < 4; i++) {
-      const card = new Card(this.colors[i]!, Value.zero, 0, this.colors[i]! + '00');
+      const card = new Card(this.colors[i]!, Value.ZERO, 0, this.colors[i]! + '00');
       this.cards.push(card);
     }
 
@@ -25,28 +25,28 @@ class Deck implements IDeck {
 
     //adding action cards
     for (let i = 0; i < 4; i++) {
-      let skip = new Card(this.colors[i]!, Value.skip, 20, this.colors[i]! + 'skip' + '0');
+      let skip = new Card(this.colors[i]!, Value.SKIP, 20, this.colors[i]! + 'skip' + '0');
       this.cards.push(skip);
-      skip = new Card(this.colors[i]!, Value.skip, 20, this.colors[i]! + 'skip' + '0');
+      skip = new Card(this.colors[i]!, Value.SKIP, 20, this.colors[i]! + 'skip' + '0');
       this.cards.push(skip);
 
-      let reverse = new Card(this.colors[i]!, Value.reverse, 20, this.colors[i]! + 'reverse' + '0');
+      let reverse = new Card(this.colors[i]!, Value.REVERSE, 20, this.colors[i]! + 'reverse' + '0');
       this.cards.push(reverse);
-      reverse = new Card(this.colors[i]!, Value.reverse, 20, this.colors[i]! + 'reverse' + '1');
+      reverse = new Card(this.colors[i]!, Value.REVERSE, 20, this.colors[i]! + 'reverse' + '1');
       this.cards.push(reverse);
 
-      let plus2 = new Card(this.colors[i]!, Value.drawTwo, 20, this.colors[i]! + 'draw-two' + '0');
+      let plus2 = new Card(this.colors[i]!, Value.DRAW_TWO, 20, this.colors[i]! + 'draw-two' + '0');
       this.cards.push(plus2);
-      plus2 = new Card(this.colors[i]!, Value.drawTwo, 20, this.colors[i]! + 'draw-two' + '1');
+      plus2 = new Card(this.colors[i]!, Value.DRAW_TWO, 20, this.colors[i]! + 'draw-two' + '1');
       this.cards.push(plus2);
     }
 
     //adding wild card
     for (let i = 0; i < 4; i++) {
-      let wild = new Card(Color.wild, Value.wild, 50, 'WILD' + 'wild' + i);
+      let wild = new Card(Color.WILD, Value.WILD, 50, 'WILD' + 'wild' + i);
       this.cards.push(wild);
 
-      let wild4 = new Card(Color.wild, Value.wildDrawFour, 50, 'WILD' + 'wild-draw-four' + i);
+      let wild4 = new Card(Color.WILD, Value.WILD_DRAW_FOUR, 50, 'WILD' + 'wild-draw-four' + i);
       this.cards.push(wild4);
     }
   }
