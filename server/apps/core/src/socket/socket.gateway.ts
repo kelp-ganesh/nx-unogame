@@ -53,7 +53,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const token: string = client.handshake.auth?.token as string;
       const payload: IJwtPayload = this.jwt.verify(token);
       client.user = payload;
-      const playerInfo: UserModel | null = await this.userService.findUserByEmail(client.user.email);
+      const playerInfo: UserModel | null =
+        await this.userService.findUserByEmail(client.user.email);
 
       const player = this.socketService.addPlayer(
         client.user.userId,

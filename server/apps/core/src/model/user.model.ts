@@ -23,12 +23,10 @@ export class UserModel extends Model {
     allowNull: false,
   })
   password!: string;
-  
+
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   avatarId!: string;
-
-
 }

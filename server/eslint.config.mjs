@@ -1,7 +1,6 @@
 import nx from '@nx/eslint-plugin';
 
 export default [
-  ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
   {
@@ -37,6 +36,14 @@ export default [
       '**/*.mjs',
     ],
     // Override or add rules here
-    rules: {},
+    rules: {
+       '@typescript-eslint/no-unused-vars': ['error'],
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-debugger': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-floating-promises': 'off',
+      'prefer-const': 'warn',
+      'no-var': 'error',
+    },
   },
 ];

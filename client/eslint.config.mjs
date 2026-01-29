@@ -19,7 +19,15 @@ export default [
       '**/*.mjs',
     ],
     // Override or add rules here
-    rules: {},
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error'],
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-debugger': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-floating-promises': 'off',
+      'prefer-const': 'warn',
+      'no-var': 'error',
+    },
   },
   ...nx.configs['flat/angular'],
   ...nx.configs['flat/angular-template'],
@@ -44,7 +52,7 @@ export default [
       ],
     },
   },
- {
+  {
     files: ['**/*.html'],
     rules: {
       '@angular-eslint/template/click-events-have-key-events': 'off',

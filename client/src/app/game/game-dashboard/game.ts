@@ -21,7 +21,13 @@ import { ILastDiscardVector } from '../../interfaces/game.interface';
 @Component({
   selector: 'app-game-room',
   standalone: true,
-  imports: [CommonModule, CardComponent, LeaderboardComponent, Spinner, ColorClassPipe],
+  imports: [
+    CommonModule,
+    CardComponent,
+    LeaderboardComponent,
+    Spinner,
+    ColorClassPipe,
+  ],
   templateUrl: './game.html',
   styleUrls: ['./game.scss'],
   animations: [
@@ -76,12 +82,8 @@ export class GameRoomComponent implements OnInit {
     }, 2000);
     this.socketService.gameInit();
     this.fetchGameState();
-    const connect = this.socketService.connect();
+    this.socketService.connect();
     this.fetchResultState();
-
-    if (!connect) {
-      console.log('socket is not connected');
-    }
   }
 
   ngOndestory() {
@@ -101,9 +103,6 @@ export class GameRoomComponent implements OnInit {
           this.socketService.gameEnds();
         }
       },
-      error: () => {
-        console.log('error while updating game state');
-      },
     });
   }
 
@@ -112,9 +111,6 @@ export class GameRoomComponent implements OnInit {
       next: (data) => {
         this.gameResult.set(data.state);
         this.playerId.set(data.playerId);
-      },
-      error: () => {
-        console.log('error while updating game result state');
       },
     });
   }

@@ -1,6 +1,6 @@
-import type { Color, Value } from "@unogame/shared-lib";
+import type { Color, Value } from '@unogame/shared-lib';
 
-export class Card{
+export class Card {
   id: string;
   color: Color;
   value: Value;
@@ -13,5 +13,3 @@ export class Card{
     this.id = id;
   }
 }
-
-

@@ -27,7 +27,7 @@ import { UsersModule } from './users/users.module';
     }),
     AuthModule,
     SocketModule,
-    UsersModule
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

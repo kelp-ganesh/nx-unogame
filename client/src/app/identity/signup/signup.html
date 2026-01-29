@@ -72,6 +72,7 @@
                 [class.ring-4]="$index === selectedAvatarSeed() - 1"
                 [class.ring-yellow-400]="$index === selectedAvatarSeed() - 1"
                 class="w-10 h-10 rounded-full border-2 bg-slate-200 selected:"
+                 [alt]="'avatar-' + ($index + 1 )"
               />
             }
           </div>

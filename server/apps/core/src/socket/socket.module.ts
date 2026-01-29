@@ -10,7 +10,7 @@ import { UsersModule } from '../users/users.module';
 @Module({
   providers: [ChatGateway, SocketService],
   imports: [
-   UsersModule,
+    UsersModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

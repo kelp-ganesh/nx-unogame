@@ -78,10 +78,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
     this.routeSub = this.socketService.onRouteToGame().subscribe({
       next: () => {
         this.routerLink.navigate(['/game']);
-      },
-      error: () => {
-        console.log(' err in res of route to gamepage');
-      },
+      }
     });
   }
 
