@@ -88,10 +88,6 @@ export class GameRoomComponent implements OnInit {
     this.gameStateSub = this.socketService.onGameState().subscribe({
       next: (data) => {
         this.gameState.set(data);
-        for(let i=0;i<this.gameState().myCards.length;i++)
-        {
-          console.log("color",this.gameState().myCards[i].color,"value",this.gameState().myCards[i].value);
-        }
         if (this.gameState().isEnd) {
           this.socketService.gameEnds();
         }

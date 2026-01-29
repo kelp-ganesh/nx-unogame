@@ -1,4 +1,4 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { PrimeNG } from 'primeng/config';
@@ -11,8 +11,7 @@ import { PrimeNG } from 'primeng/config';
 })
 export class App implements OnInit {
   protected readonly title = signal('web');
-  constructor(private primeng: PrimeNG) {}
-
+  private readonly primeng = inject(PrimeNG);
   ngOnInit() {
     this.primeng.ripple.set(true);
   }

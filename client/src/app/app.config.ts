@@ -11,11 +11,11 @@ import { providePrimeNG } from 'primeng/config';
 import { MessageService } from 'primeng/api';
 import { SocketIoConfig, provideSocketIo } from 'ngx-socket-io';
 import { environment } from '../environments/environment';
+import Aura from '@primeuix/themes/aura';
 
 const config: SocketIoConfig = {
   url: environment.socketUrl,
   options: {
-    // path: '/socket.io',
     transports: ['websocket'],
     withCredentials: true,
     autoConnect: false,
@@ -32,6 +32,9 @@ export const appConfig: ApplicationConfig = {
     provideSocketIo(config),
     MessageService,
     providePrimeNG({
+       theme: {
+        preset: Aura,
+      },
     }),
   ],
 };
