@@ -30,7 +30,7 @@ interface IAuthenticatedSocket extends Socket {
   user: IJwtPayload;
 }
 
-@WebSocketGateway(3002, {
+@WebSocketGateway(+process.env.SOCKET_PORT, {
   cors: {
     origin: process.env.FRONTEND_URL,
   },
@@ -53,17 +53,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const token: string = client.handshake.auth?.token as string;
       const payload: IJwtPayload = this.jwt.verify(token);
       client.user = payload;
-      const playerInfo: UserModel | null = await this.userService.findUserByEmail(client.user.email);
+      const playerInfo: UserModel | null =
+        await this.userService.findUserByEmail(client.user.email);
+      if (playerInfo) {
+        const player = this.socketService.addPlayer(
+          client.user.userId,
+          client.id,
+          playerInfo.dataValues.avatarId as string,
+          playerInfo.dataValues.name as string,
+        );
+        const lobby = this.socketService.getLobbyState();
 
-      const player = this.socketService.addPlayer(
-        client.user.userId,
-        client.id,
-        playerInfo!.dataValues.avatarId as string,
-        playerInfo!.dataValues.name as string,
-      );
-      const lobby = this.socketService.getLobbyState();
-
-      client.emit('lobby-update', { lobby: lobby, player: player });
+        client.emit('lobby-update', { lobby: lobby, player: player });
+      }
     } catch {
       this.logger.warn('unauthorized user is trying to hit lobby page');
       client.disconnect();
@@ -105,7 +107,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const res = this.socketService.joinLobby(data.roomId, client.id);
     this.server.emit('lobby-update', { lobby: res.lobby, player: res.player });
-    if (res.sockets?.length) {
+    if (res.sockets.length) {
       res.sockets.forEach((socket) =>
         this.server.to(socket).emit('route-gamePage'),
       );

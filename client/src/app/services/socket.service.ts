@@ -38,7 +38,7 @@ export class SocketService {
 
       return true;
     } else {
-      return true;
+      return false;
     }
   }
 

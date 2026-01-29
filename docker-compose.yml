@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    image: nx-uno-game-server:latest
+    ports:
+      - "3000:3000"
+      - "3002:3002"
+    environment:
+      - PORT=3000
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    image: nx-uno-game-client:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - server

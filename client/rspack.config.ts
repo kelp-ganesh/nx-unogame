@@ -19,7 +19,19 @@ export default createConfig(
         },
       ],
       styles: ['./src/styles.css'],
-      devServer: {},
+      devServer: {
+        proxy: {
+          '/api': {
+            target: 'http://localhost:3000',
+            changeOrigin: true,
+          },
+          '/socket.io': {
+            target: 'http://localhost:3002',
+            changeOrigin: true,
+            ws: true,
+          },
+        },
+      },
     },
   },
   {
@@ -50,7 +62,19 @@ export default createConfig(
         sourceMap: true,
         namedChunks: true,
         verbose: true,
-        devServer: {},
+        devServer: {
+          proxy: {
+            '/api': {
+              target: 'http://localhost:3000',
+              changeOrigin: true,
+            },
+            '/socket.io': {
+              target: 'http://localhost:3002',
+              changeOrigin: true,
+              ws: true,
+            },
+          },
+        },
       },
     },
   },

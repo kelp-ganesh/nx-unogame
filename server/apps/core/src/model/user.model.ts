@@ -9,26 +9,26 @@ export class UserModel extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  name!: string;
+  name: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
     unique: true,
   })
-  email!: string;
+  email: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  password!: string;
+  password: string;
   
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  avatarId!: string;
+  avatarId: string;
 
 
 }

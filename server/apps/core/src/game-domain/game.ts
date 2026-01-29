@@ -39,6 +39,7 @@ export class UnoGame {
 
     //deck init
     const deck = new Deck();
+    deck.generateCards();
     const cards = deck.shuffle();
 
     for (let i = 0; i < players.length; i++) {
@@ -80,17 +81,13 @@ export class UnoGame {
   }
 
   isValidMatch(card1: Card, card2: Card) {
-    if (
+    return (
       (this.pendingAction.Type === PendingActionType.DRAW_TWO &&
         card1.value === Value.DRAW_TWO) ||
       card1.color === this.activeContext ||
       card1.value === card2.value ||
       card1.color === Color.WILD
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    );
   }
 
   getFromDrawPile(player: Player) {
@@ -106,52 +103,69 @@ export class UnoGame {
     }
   }
 
+  skipCardSubmitted(card: Card) {
+    //increment of current player by 2
+    this.currentPlayerIndex =
+      (((this.currentPlayerIndex + this.direction * 2) % this.players.length) +
+        this.players.length) %
+      this.players.length;
+    this.activeContext = card.color;
+    this.discardPile.unshift(card);
+  }
+  reverseCardSubmitted(card: Card) {
+    //dir=dir*-1;
+    this.direction = (this.direction * -1) as 1 | -1;
+    this.currentPlayerIndex =
+      (((this.currentPlayerIndex + this.direction) % this.players.length) +
+        this.players.length) %
+      this.players.length;
+    this.discardPile.unshift(card);
+    this.activeContext = card.color;
+  }
+  drawTwoCardSubmitted(card: Card) {
+    if (this.discardPile[0]?.value == Value.DRAW_TWO) {
+      const initialCount = this.pendingAction.count;
+      this.pendingAction = {
+        Type: PendingActionType.DRAW_TWO,
+        count: initialCount + 2,
+      };
+    } else {
+      this.pendingAction = { Type: PendingActionType.DRAW_TWO, count: 2 };
+    }
+    this.currentPlayerIndex =
+      (((this.currentPlayerIndex + this.direction) % this.players.length) +
+        this.players.length) %
+      this.players.length;
+    //so no one can submit card on previous active context
+    this.activeContext = Color.WILD;
+    this.discardPile.unshift(card);
+  }
+
+  wildCardSubmitted(card: Card) {
+    //set active context to chosen color
+    this.discardPile.unshift(card);
+    this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
+    this.allowChangeContextPlayerIndex = this.currentPlayerIndex;
+  }
+
+  wildDrawFourCardSubmitted(card: Card) {
+    //set active context to chosen color
+    this.allowChangeContextPlayerIndex = this.currentPlayerIndex;
+    this.discardPile.unshift(card);
+    this.pendingAction = { Type: PendingActionType.DRAW_TWO, count: 4 };
+  }
+
   cardSubmitted(card: Card) {
     if (card.value === Value.SKIP) {
-      //increment of current player by 2
-      this.currentPlayerIndex =
-        (((this.currentPlayerIndex + this.direction * 2) %
-          this.players.length) +
-          this.players.length) %
-        this.players.length;
-      this.activeContext = card.color;
-      this.discardPile.unshift(card);
+      this.skipCardSubmitted(card);
     } else if (card.value === Value.REVERSE) {
-      //dir=dir*-1;
-      this.direction = (this.direction * -1) as 1 | -1;
-      this.currentPlayerIndex =
-        (((this.currentPlayerIndex + this.direction) % this.players.length) +
-          this.players.length) %
-        this.players.length;
-      this.discardPile.unshift(card);
-      this.activeContext = card.color;
+      this.reverseCardSubmitted(card);
     } else if (card.value === Value.DRAW_TWO) {
-      if (this.discardPile[0]?.value == Value.DRAW_TWO) {
-        const initialCount = this.pendingAction.count;
-        this.pendingAction = {
-          Type: PendingActionType.DRAW_TWO,
-          count: initialCount + 2,
-        };
-      } else {
-        this.pendingAction = { Type: PendingActionType.DRAW_TWO, count: 2 };
-      }
-      this.currentPlayerIndex =
-        (((this.currentPlayerIndex + this.direction) % this.players.length) +
-          this.players.length) %
-        this.players.length;
-      //so no one can submit card on previous active context
-      this.activeContext = Color.WILD;
-      this.discardPile.unshift(card);
+      this.drawTwoCardSubmitted(card);
     } else if (card.value === Value.WILD) {
-      //set active context to chosen color
-      this.discardPile.unshift(card);
-      this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
-      this.allowChangeContextPlayerIndex = this.currentPlayerIndex;
+      this.wildCardSubmitted(card);
     } else if (card.value === Value.WILD_DRAW_FOUR) {
-      //set active context to chosen color
-      this.allowChangeContextPlayerIndex = this.currentPlayerIndex;
-      this.discardPile.unshift(card);
-      this.pendingAction = { Type: PendingActionType.DRAW_TWO, count: 4 };
+      this.wildDrawFourCardSubmitted(card);
     }
   }
 

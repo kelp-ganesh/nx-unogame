@@ -1,13 +1,12 @@
-FROM node:20-alpine 
+FROM node:20-alpine AS build
 
-WORKDIR /app
+WORKDIR /workspace
 
-COPY package*.json ./
-
-RUN npm i 
 
 COPY . .
+RUN cd client && npm ci --legacy-peer-deps && npx nx build client --configuration=production
 
-EXPOSE 4200 
-
-CMD [ "npm","start","--","--host","0.0.0.0"]
+FROM nginx:stable-alpine AS runtime
+COPY --from=build /workspace/client/dist/client /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
