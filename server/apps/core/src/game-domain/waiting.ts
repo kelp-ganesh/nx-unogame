@@ -1,6 +1,4 @@
-import type { IWaitingRoom } from "@unogame/shared-lib";
-import { UnoGame } from "./game.js";
-import type { Player } from "./player.js";
+import type { Player } from "./player";
 
 export class Waiting {
   id: string;

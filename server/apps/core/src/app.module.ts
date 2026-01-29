@@ -5,7 +5,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { SocketModule } from './socket/socket.module';
-import { PlayerModel } from './model/player.model';
+import { UserModel } from './model/user.model';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,12 +21,13 @@ import { PlayerModel } from './model/player.model';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      models: [PlayerModel],
+      models: [UserModel],
       autoLoadModels: true,
       synchronize: true,
     }),
     AuthModule,
     SocketModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],

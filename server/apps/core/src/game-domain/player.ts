@@ -1,4 +1,4 @@
-import type { IPlayer ,ICard} from "@unogame/shared-lib";
+import type { ICard} from "@unogame/shared-lib";
 
 export class Player {
   userId: string;

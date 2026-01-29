@@ -1,5 +1,5 @@
-import { Color, Value, type IDeck } from '@unogame/shared-lib';
-import { Card } from './card.js';
+import { Color, Value, IDeck } from '@unogame/shared-lib';
+import { Card } from './card';
 
 class Deck implements IDeck {
   cards: Card[] = [];

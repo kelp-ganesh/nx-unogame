@@ -70,44 +70,43 @@ export class SocketService {
     this.socket.emit('create-room', { roomName, maxSize });
   }
 
-  startGame() {
+  startGame(): void {
     this.socket.emit('start-game');
   }
 
-  disconnect() {
+  disconnect(): void {
     this.socket.disconnect();
   }
 
-  submitCard(card: ICard) {
+  submitCard(card: ICard): void {
     this.socket.emit('submit-card', { card: card });
   }
 
-  drawCard() {
-    this.socket.emit('draw-card', {});
+  drawCard(): void {
+    this.socket.emit('draw-card');
   }
 
-  timeExceed() {
+  timeExceed(): void {
     this.socket.emit('time-exceeded');
   }
-  //when user route to /game page game state should be shared
 
-  onChallenge() {
+  onChallenge(): void {
     this.socket.emit('challenge-player');
   }
 
-  onUno() {
+  onUno(): void {
     this.socket.emit('uno-said');
   }
 
-  gameInit() {
+  gameInit(): void {
     this.socket.emit('game-init');
   }
 
-  submitColor(color: string) {
+  submitColor(color: string): void {
     this.socket.emit('change-contextColor', { color: color });
   }
 
-  gameEnds() {
+  gameEnds(): void {
     this.socket.emit('get-leaderboardData');
   }
 }

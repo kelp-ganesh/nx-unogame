@@ -1,10 +1,10 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'players',
+  tableName: 'users',
   timestamps: true,
 })
-export class PlayerModel extends Model {
+export class UserModel extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,

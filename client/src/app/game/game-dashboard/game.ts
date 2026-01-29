@@ -1,4 +1,11 @@
-import { Component, ElementRef, signal, ViewChild, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  signal,
+  ViewChild,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SocketService } from '../../services/socket.service';
 import { Subscription } from 'rxjs';
@@ -8,6 +15,7 @@ import { LeaderboardComponent } from '../leaderboard/leaderboard';
 import type { ICard } from '@unogame/shared-lib';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Spinner } from '../spinner/spinner';
+import { ILastDiscardVector } from '../../interfaces/game.interface';
 
 @Component({
   selector: 'app-game-room',
@@ -47,7 +55,7 @@ export class GameRoomComponent implements OnInit {
   isLoading = signal<boolean>(false);
   drawnCard = signal<ICard | undefined>(undefined);
   drawnCardHTML = signal<HTMLElement | undefined>(undefined);
-  lastDiscardVector = { x: 0, y: 0 };
+  lastDiscardVector: ILastDiscardVector = { x: 0, y: 0 };
   gameState = signal<IGameState | undefined>(undefined);
   gameResult = signal<IUnoGame | undefined>(undefined);
   playerId = signal<string>('');

@@ -1,4 +1,4 @@
-import type { ICard, Color, Value } from "@unogame/shared-lib";
+import type { Color, Value } from "@unogame/shared-lib";
 
 export class Card{
   id: string;

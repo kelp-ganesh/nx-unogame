@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { LandingComponent } from './landingpage/landing';
+import { LandingComponent } from './landing/landing';
 import { SignupComponent } from './identity/signup/signup';
 import { SigninComponent } from './identity/signin/signin';
 import { GameRoomComponent } from './game/game-dashboard/game';
-import { LobbyComponent } from './lobbypage/lobby';
+import { LobbyComponent } from './lobby/lobby';
 
 export const routes: Routes = [
   {

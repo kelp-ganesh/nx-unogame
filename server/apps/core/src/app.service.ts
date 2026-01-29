@@ -6,5 +6,4 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-  constructor(private configService: ConfigService) {}
 }

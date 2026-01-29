@@ -37,12 +37,18 @@ export class SignupComponent implements OnDestroy {
   }
 
   signupForm = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    username: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+    ]),
   });
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.signupForm.valid) {
       const payload = {
         ...this.signupForm.value,
@@ -67,7 +73,11 @@ export class SignupComponent implements OnDestroy {
                 this.routerLink.navigate(['/signin']);
               }, 1500);
             } else {
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: res.desc });
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: res.desc,
+              });
             }
           },
           error: (err) => {

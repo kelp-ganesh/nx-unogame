@@ -11,19 +11,20 @@ import { Server } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { Socket } from 'socket.io';
 import { ConfigService } from '@nestjs/config';
- 
+
 import type {
   IJoinRoom,
   ICreateRoom,
   ISubmitCard,
   IChangeColorContext,
   ILobbyUpdate,
-  IJwtPayload
+  IJwtPayload,
 } from '@unogame/shared-lib';
 import { SocketService } from './socket.service';
 import { Logger } from '@nestjs/common';
-import { PlayerModel } from '../model/player.model';
 import { InjectModel } from '@nestjs/sequelize';
+import { UsersService } from '../users/users.service';
+import { UserModel } from '../model/user.model';
 
 interface IAuthenticatedSocket extends Socket {
   user: IJwtPayload;
@@ -36,13 +37,11 @@ interface IAuthenticatedSocket extends Socket {
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  
 
   private readonly logger = new Logger(ChatGateway.name);
 
   constructor(
-    @InjectModel(PlayerModel)
-    private playerModel: typeof PlayerModel,
+    private userService: UsersService,
     private jwt: JwtService,
     public configService: ConfigService,
     private readonly socketService: SocketService,
@@ -54,9 +53,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const token: string = client.handshake.auth?.token as string;
       const payload: IJwtPayload = this.jwt.verify(token);
       client.user = payload;
-      const playerInfo: PlayerModel | null = await this.playerModel.findOne({
-        where: { email: client.user.email },
-      });
+      const playerInfo: UserModel | null = await this.userService.findUserByEmail(client.user.email);
 
       const player = this.socketService.addPlayer(
         client.user.userId,
@@ -64,7 +61,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         playerInfo!.dataValues.avatarId as string,
         playerInfo!.dataValues.name as string,
       );
-      const lobby=this.socketService.getLobbyState();
+      const lobby = this.socketService.getLobbyState();
 
       client.emit('lobby-update', { lobby: lobby, player: player });
     } catch {
@@ -74,7 +71,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: IAuthenticatedSocket) {
-   this.socketService.removePlayer(client.id);
+    this.socketService.removePlayer(client.id);
   }
 
   // health check
