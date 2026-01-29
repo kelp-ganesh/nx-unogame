@@ -30,7 +30,7 @@ interface IAuthenticatedSocket extends Socket {
   user: IJwtPayload;
 }
 
-@WebSocketGateway(3002, {
+@WebSocketGateway(+process.env.SOCKET_PORT, {
   cors: {
     origin: process.env.FRONTEND_URL,
   },
@@ -187,7 +187,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  @SubscribeMessage('get-leaderboardData')
+  @SubscribeMessage('leaderboard-data')
   onGameEnd(@ConnectedSocket() client: Socket) {
     const res = this.socketService.fetchLeaderBoardData(client.id);
     res.sockets.forEach((value: string) => {

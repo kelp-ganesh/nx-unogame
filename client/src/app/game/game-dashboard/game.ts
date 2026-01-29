@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { Color, IUnoGame, IGameState } from '@unogame/shared-lib';
 import { CardComponent } from '../card/card';
 import { LeaderboardComponent } from '../leaderboard/leaderboard';
+import { ColorClassPipe } from '../../pipes/color-class.pipe';
 import type { ICard } from '@unogame/shared-lib';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Spinner } from '../spinner/spinner';
@@ -20,7 +21,7 @@ import { ILastDiscardVector } from '../../interfaces/game.interface';
 @Component({
   selector: 'app-game-room',
   standalone: true,
-  imports: [CommonModule, CardComponent, LeaderboardComponent, Spinner],
+  imports: [CommonModule, CardComponent, LeaderboardComponent, Spinner, ColorClassPipe],
   templateUrl: './game.html',
   styleUrls: ['./game.scss'],
   animations: [
@@ -148,23 +149,6 @@ export class GameRoomComponent implements OnInit {
 
   callChallenge(): void {
     this.socketService.onChallenge();
-  }
-
-  getColorClass(color: Color): string {
-    switch (color) {
-      case Color.RED:
-        return 'bg-red-600';
-      case Color.BLUE:
-        return 'bg-blue-600';
-      case Color.GREEN:
-        return 'bg-green-600';
-      case Color.YELLOW:
-        return 'bg-yellow-600';
-      case Color.WILD:
-        return 'bg-slate-800 border-2 border-white';
-      default:
-        return 'bg-gray-400';
-    }
   }
 
   getOpponentStyle(index: number, total: number) {

@@ -29,17 +29,17 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<ISigninResponse> {
     try {
-      const { access_token } = await this.authService.login(loginDto);
-      response.cookie('authToken', access_token, {
+      const { accessToken } = await this.authService.login(loginDto);
+      response.cookie('authToken', accessToken, {
         httpOnly: false,
         secure: true,
         sameSite: 'none',
         maxAge: ACCESS_TOKEN_MAX_AGE,
       });
-      return { status: true, access_token, msg: 'none' };
+      return { status: true, accessToken: accessToken, msg: 'none' };
     } catch (error) {
       this.logger.error(error.message);
-      return { status: false, access_token: 'null', msg: error.message };
+      return { status: false, accessToken: 'null', msg: error.message };
     }
   }
 }

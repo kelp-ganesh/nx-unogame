@@ -58,7 +58,8 @@
           >
             <img
               [src]="'assets/avatars/p' + player.avatarUrl + '.png'"
-              class="w-full h-full rounded-full" alt="avatar"
+              class="w-full h-full rounded-full"
+              alt="avatar"
             />
 
             <div
@@ -117,7 +118,7 @@
       <div
         #discardPile
         class="relative w-32 h-48 rounded-xl border-4 border-white shadow-2xl cursor-pointer"
-        [ngClass]="getColorClass(gameState().topCard.color)"
+        [ngClass]="gameState().topCard.color | colorClass"
       >
         <app-card [card]="gameState().topCard" />
       </div>
@@ -162,7 +163,7 @@
         [@cardAnim]="{ value: '', params: lastDiscardVector }"
         (click)="playCard(card, cardEl)"
         class="relative w-32 h-48 rounded-xl border-4 border-white shadow-2xl cursor-pointer hover:-translate-y-12 hover:rotate-0 hover:z-50 transition-all duration-300 origin-bottom"
-        [ngClass]="getColorClass(card.color)"
+        [ngClass]="card.color | colorClass"
       >
         <app-card [card]="card" />
       </div>

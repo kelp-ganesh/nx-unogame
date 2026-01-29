@@ -17,7 +17,7 @@ export interface ISignUpResponse {
 
 export interface ISigninResponse {
   status: boolean;
-  access_token: string;
+  accessToken: string;
   msg: string;
 }
 

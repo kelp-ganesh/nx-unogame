@@ -6,6 +6,7 @@ import { Logger } from '@nestjs/common';
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
+  
   constructor(
     @InjectModel(UserModel)
     private userModel: typeof UserModel,

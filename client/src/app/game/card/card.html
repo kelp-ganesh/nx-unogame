@@ -1,67 +1,71 @@
-@if (isNumber(card.value)) {
-  <div class="absolute inset-0 flex items-center justify-center">
-    <span class="text-8xl font-black italic opacity-90 drop-shadow-md text-shadow">{{
-      card.value
-    }}</span>
-    <span class="absolute top-2 left-3 font-bold text-xl">{{ card.value }}</span>
-    <span class="absolute bottom-2 right-3 font-bold text-xl rotate-180">{{ card.value }}</span>
+@if (card.value === value.ZERO || card.value === value.ONE || card.value ===
+value.TWO || card.value === value.THREE || card.value === value.FOUR ||
+card.value === value.FIVE || card.value === value.SIX || card.value ===
+value.SEVEN || card.value === value.EIGHT || card.value === value.NINE) {
+<div class="absolute inset-0 flex items-center justify-center">
+  <span class="text-8xl font-black italic opacity-90 drop-shadow-md text-shadow"
+    >{{ card.value }}</span
+  >
+  <span class="absolute top-2 left-3 font-bold text-xl">{{ card.value }}</span>
+  <span class="absolute bottom-2 right-3 font-bold text-xl rotate-180"
+    >{{ card.value }}</span
+  >
+</div>
+} @if (card.value === value.SKIP) {
+<div class="absolute inset-0 flex items-center justify-center">
+  <span class="text-2xl font-black italic opacity-90 drop-shadow-md text-shadow"
+    >{{ card.value }}</span
+  >
+  <span class="absolute top-2 left-3 font-bold text-xl">S</span>
+  <span class="absolute bottom-2 right-3 font-bold text-xl rotate-180">S</span>
+</div>
+} @if (card.value === value.REVERSE) {
+<div class="absolute inset-0 flex items-center justify-center">
+  <span class="text-xl font-black italic opacity-90 drop-shadow-md text-shadow"
+    >{{ card.value }}</span
+  >
+  <span class="absolute top-2 left-3 font-bold text-xl">R</span>
+  <span class="absolute bottom-2 right-3 font-bold text-xl rotate-180">R</span>
+</div>
+} @if (card.value === value.DRAW_TWO) {
+<div class="w-full h-full flex items-center justify-center relative">
+  <span class="text-7xl font-black italic opacity-90 drop-shadow-md">+2</span>
+  <span class="absolute top-2 left-3 font-bold text-xl">+2</span>
+  <span class="absolute bottom-2 right-3 font-bold text-xl rotate-180">+2</span>
+</div>
+} @if (card.value === value.WILD) {
+<div
+  class="w-full h-full flex items-center justify-center relative overflow-hidden"
+>
+  <div
+    class="grid grid-cols-2 w-24 h-24 rounded-full overflow-hidden rotate-45 border-4 border-white shadow-inner"
+  >
+    <div class="bg-red-500"></div>
+    <div class="bg-blue-500"></div>
+    <div class="bg-yellow-400"></div>
+    <div class="bg-green-500"></div>
   </div>
-}
-
-@if (isSkip(card.value)) {
-  <div class="absolute inset-0 flex items-center justify-center">
-    <span class="text-2xl font-black italic opacity-90 drop-shadow-md text-shadow">{{
-      card.value
-    }}</span>
-    <span class="absolute top-2 left-3 font-bold text-xl">S</span>
-    <span class="absolute bottom-2 right-3 font-bold text-xl rotate-180">S</span>
+  <span class="absolute top-2 left-3 font-bold text-xl text-white">W</span>
+  <span
+    class="absolute bottom-2 right-3 font-bold text-xl text-white rotate-180"
+    >W</span
+  >
+</div>
+} @if (card.value === value.WILD_DRAW_FOUR) {
+<div
+  class="w-full h-full flex items-center justify-center relative overflow-hidden"
+>
+  <div
+    class="grid grid-cols-2 w-24 h-24 rounded-full overflow-hidden rotate-45 border-4 border-white shadow-inner"
+  >
+    <div class="bg-red-500"></div>
+    <div class="bg-blue-500"></div>
+    <div class="bg-yellow-400"></div>
+    <div class="bg-green-500"></div>
   </div>
-}
-
-@if (isReverse(card.value)) {
-  <div class="absolute inset-0 flex items-center justify-center">
-    <span class="text-xl font-black italic opacity-90 drop-shadow-md text-shadow">{{
-      card.value
-    }}</span>
-    <span class="absolute top-2 left-3 font-bold text-xl">R</span>
-    <span class="absolute bottom-2 right-3 font-bold text-xl rotate-180">R</span>
-  </div>
-}
-
-@if (isDrawTwo(card.value)) {
-  <div class="w-full h-full flex items-center justify-center relative">
-    <span class="text-7xl font-black italic opacity-90 drop-shadow-md">+2</span>
-    <span class="absolute top-2 left-3 font-bold text-xl">+2</span>
-    <span class="absolute bottom-2 right-3 font-bold text-xl rotate-180">+2</span>
-  </div>
-}
-
-@if (isWild(card.value)) {
-  <div class="w-full h-full flex items-center justify-center relative overflow-hidden">
-    <div
-      class="grid grid-cols-2 w-24 h-24 rounded-full overflow-hidden rotate-45 border-4 border-white shadow-inner"
-    >
-      <div class="bg-red-500"></div>
-      <div class="bg-blue-500"></div>
-      <div class="bg-yellow-400"></div>
-      <div class="bg-green-500"></div>
-    </div>
-    <span class="absolute top-2 left-3 font-bold text-xl text-white">W</span>
-    <span class="absolute bottom-2 right-3 font-bold text-xl text-white rotate-180">W</span>
-  </div>
-}
-
-@if (isWildFour(card.value)) {
-  <div class="w-full h-full flex items-center justify-center relative overflow-hidden">
-    <div
-      class="grid grid-cols-2 w-24 h-24 rounded-full overflow-hidden rotate-45 border-4 border-white shadow-inner"
-    >
-      <div class="bg-red-500"></div>
-      <div class="bg-blue-500"></div>
-      <div class="bg-yellow-400"></div>
-      <div class="bg-green-500"></div>
-    </div>
-    <span class="absolute top-2 left-3 font-bold text-l text-white">W+4</span>
-    <span class="absolute bottom-2 right-3 font-bold text-l text-white rotate-180">W+4</span>
-  </div>
+  <span class="absolute top-2 left-3 font-bold text-l text-white">W+4</span>
+  <span class="absolute bottom-2 right-3 font-bold text-l text-white rotate-180"
+    >W+4</span
+  >
+</div>
 }

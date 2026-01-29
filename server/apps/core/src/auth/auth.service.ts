@@ -14,7 +14,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async create(signupDto: SignupDto) {
+  async create(signupDto: SignupDto): Promise<void> {
     const user = await this.userService.findUserByEmail(signupDto.email);
     if (user) {
       throw new Error('User Already exists');
@@ -28,7 +28,7 @@ export class AuthService {
     );
   }
 
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
     const rec = await this.userService.findUserByEmail(loginDto.email);
     const player = rec?.dataValues;
     if (!player) {
@@ -47,7 +47,7 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
 
     return {
-      access_token: token,
+      accessToken: token,
     };
   }
 }

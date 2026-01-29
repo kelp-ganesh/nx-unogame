@@ -107,6 +107,6 @@ export class SocketService {
   }
 
   gameEnds(): void {
-    this.socket.emit('get-leaderboardData');
+    this.socket.emit('leaderboard-data');
   }
 }

@@ -10,7 +10,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpService } from '../../services/http.service';
+import { LoginService } from '../../services/login.service';
 import { Router } from '@angular/router';
 import { ISignUpResponse } from '@unogame/shared-lib';
 import { Subscription } from 'rxjs';
@@ -23,18 +23,12 @@ import { Subscription } from 'rxjs';
   styleUrls: [],
 })
 export class SignupComponent implements OnDestroy {
-  private readonly authService = inject(HttpService);
+  private readonly authService = inject(LoginService);
   private readonly messageService = inject(MessageService);
   private readonly routerLink = inject(Router);
   private signUpResponseSub: Subscription;
 
   selectedAvatarSeed = signal<number>(1);
-
-  ngOnDestroy() {
-    if (this.signUpResponseSub) {
-      this.signUpResponseSub.unsubscribe();
-    }
-  }
 
   signupForm = new FormGroup({
     username: new FormControl('', [
@@ -48,46 +42,49 @@ export class SignupComponent implements OnDestroy {
     ]),
   });
 
-  onSubmit(): void {
+  ngOnDestroy() {
+    if (this.signUpResponseSub) {
+      this.signUpResponseSub.unsubscribe();
+    }
+  }
+
+  async onSubmit(): Promise<void> {
     if (this.signupForm.valid) {
       const payload = {
         ...this.signupForm.value,
       };
-
-      this.signUpResponseSub = this.authService
-        .onSignup({
-          name: payload.username!,
-          email: payload.email!,
-          password: payload.password!,
+      try {
+        const res: ISignUpResponse = await this.authService.onSignup({
+          name: payload.username,
+          email: payload.email,
+          password: payload.password,
           avatarId: this.selectedAvatarSeed().toString(),
-        })
-        .subscribe({
-          next: (res: ISignUpResponse) => {
-            if (res.status) {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'Signup Successful',
-              });
-              setTimeout(() => {
-                this.routerLink.navigate(['/signin']);
-              }, 1500);
-            } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: res.desc,
-              });
-            }
-          },
-          error: (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.message,
-            });
-          },
         });
+
+        if (res.status) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Signup Successful',
+          });
+          setTimeout(() => {
+            this.routerLink.navigate(['/signin']);
+          }, 1500);
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: res.desc,
+          });
+        }
+      } catch (err) {
+        console.error('Signin Failed:', err.message);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Signin Failed',
+        });
+      }
     }
   }
 }

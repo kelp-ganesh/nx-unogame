@@ -13,18 +13,4 @@ export class Waiting {
     this.players = [creator];
     this.maxSize = maxSize;
   }
-
-  join_room(player: Player) {
-    player.isReady = true;
-    this.players.push(player);
-  }
-
-  //just for check as actual room is made on gateway
-  close_room(socket: string) {
-    if (socket === this.id) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 }

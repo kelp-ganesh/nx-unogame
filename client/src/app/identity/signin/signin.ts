@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
@@ -8,11 +8,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpService } from '../../services/http.service';
+import { LoginService } from '../../services/login.service';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { ISigninResponse } from '@unogame/shared-lib';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -21,17 +20,10 @@ import { Subscription } from 'rxjs';
   templateUrl: './signin.html',
   styleUrls: [],
 })
-export class SigninComponent implements OnDestroy {
-  private readonly authService = inject(HttpService);
+export class SigninComponent {
+  private readonly authService = inject(LoginService);
   private readonly messageService = inject(MessageService);
   private readonly routerLink = inject(Router);
-  private signInResponseSub: Subscription;
-
-  ngOnDestroy() {
-    if (this.signInResponseSub) {
-      this.signInResponseSub.unsubscribe();
-    }
-  }
 
   signinForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -41,43 +33,42 @@ export class SigninComponent implements OnDestroy {
     ]),
   });
 
-  onSubmit(): void {
-    if (this.signinForm.valid) {
-      const payload = {
-        ...this.signinForm.value,
-      };
-      this.signInResponseSub = this.authService
-        .onSignin({ email: payload.email!, password: payload.password! })
-        .subscribe({
-          next: (res: ISigninResponse) => {
-            // Store token in localStorage
-            if (res.status == true) {
-              localStorage.setItem('authToken', res.access_token);
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'Signin Successful',
-              });
-              setTimeout(() => {
-                this.routerLink.navigate(['/lobby']);
-              }, 1500);
-            } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: res.msg,
-              });
-            }
-          },
-          error: (err) => {
-            console.error('Signin Failed:', err.message);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Signin Failed',
-            });
-          },
+  async onSubmit(): Promise<void> {
+    if (!this.signinForm.valid) return;
+
+    const { email, password } = this.signinForm.value as {
+      email?: string;
+      password?: string;
+    };
+
+    try {
+      const res: ISigninResponse = await this.authService.onSignin({
+        email: email,
+        password: password,
+      });
+
+      if (res.status === true) {
+        localStorage.setItem('authToken', res.accessToken);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Signin Successful',
         });
+        setTimeout(() => this.routerLink.navigate(['/lobby']), 1500);
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: res.msg,
+        });
+      }
+    } catch (err) {
+      console.error('Signin Failed:', err.message);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Signin Failed',
+      });
     }
   }
 }

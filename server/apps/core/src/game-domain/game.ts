@@ -31,7 +31,7 @@ export class UnoGame {
 
   constructor(players: IPlayer[], name: string) {
     //in future should be replaced by extenal lib that creates random numbers
-    this.id = players[0]!.userId;
+    this.id = players[0].userId;
     this.players = players;
     this.direction = 1;
     this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
@@ -39,17 +39,18 @@ export class UnoGame {
 
     //deck init
     const deck = new Deck();
+    deck.generateCards();
     const cards = deck.shuffle();
 
     for (let i = 0; i < players.length; i++) {
-      players[i]!.myCards = cards.slice(7 * i, 7 * (i + 1));
-      players[i]!.index = i;
+      players[i].myCards = cards.slice(7 * i, 7 * (i + 1));
+      players[i].index = i;
     }
 
     let lastCardIndex: number = players.length * 7;
 
-    this.discardPile.push(cards[lastCardIndex]!);
-    this.activeContext = this.discardPile[0]!.color;
+    this.discardPile.push(cards[lastCardIndex]);
+    this.activeContext = this.discardPile[0].color;
     this.drawPile = cards.slice(lastCardIndex + 1, cards.length);
   }
 
@@ -57,7 +58,7 @@ export class UnoGame {
     console.log('discard pile', this.discardPile);
     console.log('draw pile', this.drawPile);
     for (let i = 0; i < this.players.length; i++) {
-      console.log('player ' + i + ' myCards:', this.players[i]!.myCards);
+      console.log('player ' + i + ' myCards:', this.players[i].myCards);
     }
   }
 
@@ -65,11 +66,11 @@ export class UnoGame {
     this.cardDrawn = false;
     if (this.pendingAction.Type === PendingActionType.DRAW_TWO) {
       for (let i = 0; i < this.pendingAction.count; i++) {
-        this.players[this.currentPlayerIndex]!.myCards.push(
-          this.drawPile.pop()!,
+        this.players[this.currentPlayerIndex].myCards.push(
+          this.drawPile.pop(),
         );
       }
-      this.activeContext = this.discardPile[0]!.color;
+      this.activeContext = this.discardPile[0].color;
     }
     this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
 
@@ -80,24 +81,20 @@ export class UnoGame {
   }
 
   isValidMatch(card1: Card, card2: Card) {
-    if (
+    return (
       (this.pendingAction.Type === PendingActionType.DRAW_TWO &&
         card1.value === Value.DRAW_TWO) ||
       card1.color === this.activeContext ||
       card1.value === card2.value ||
       card1.color === Color.WILD
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    );
   }
 
   getFromDrawPile(player: Player) {
     if (player.index === this.currentPlayerIndex && !this.cardDrawn) {
       const card = this.drawPile.pop();
       //pushing drawn card to players myCards card
-      player.myCards.push(card!);
+      player.myCards.push(card);
       this.drawnCard = card;
       this.cardDrawn = true;
       player.isUnoSaid = false;
@@ -106,27 +103,28 @@ export class UnoGame {
     }
   }
 
-  cardSubmitted(card: Card) {
-    if (card.value === Value.SKIP) {
-      //increment of current player by 2
-      this.currentPlayerIndex =
-        (((this.currentPlayerIndex + this.direction * 2) %
-          this.players.length) +
-          this.players.length) %
-        this.players.length;
-      this.activeContext = card.color;
-      this.discardPile.unshift(card);
-    } else if (card.value === Value.REVERSE) {
-      //dir=dir*-1;
-      this.direction = (this.direction * -1) as 1 | -1;
-      this.currentPlayerIndex =
-        (((this.currentPlayerIndex + this.direction) % this.players.length) +
-          this.players.length) %
-        this.players.length;
-      this.discardPile.unshift(card);
-      this.activeContext = card.color;
-    } else if (card.value === Value.DRAW_TWO) {
-      if (this.discardPile[0]?.value == Value.DRAW_TWO) {
+  skipCardSubmitted(card: Card) {
+    //increment of current player by 2
+    this.currentPlayerIndex =
+      (((this.currentPlayerIndex + this.direction * 2) % this.players.length) +
+        this.players.length) %
+      this.players.length;
+    this.activeContext = card.color;
+    this.discardPile.unshift(card);
+  }
+  reverseCardSubmitted(card: Card) {
+    //dir=dir*-1;
+    this.direction = (this.direction * -1) as 1 | -1;
+    this.currentPlayerIndex =
+      (((this.currentPlayerIndex + this.direction) % this.players.length) +
+        this.players.length) %
+      this.players.length;
+    this.discardPile.unshift(card);
+    this.activeContext = card.color;
+  }
+  drawTwoCardSubmitted(card:Card)
+  {
+     if (this.discardPile[0].value == Value.DRAW_TWO) {
         const initialCount = this.pendingAction.count;
         this.pendingAction = {
           Type: PendingActionType.DRAW_TWO,
@@ -142,28 +140,46 @@ export class UnoGame {
       //so no one can submit card on previous active context
       this.activeContext = Color.WILD;
       this.discardPile.unshift(card);
-    } else if (card.value === Value.WILD) {
-      //set active context to chosen color
+  }
+
+   wildCardSubmitted(card:Card)
+   {
+     //set active context to chosen color
       this.discardPile.unshift(card);
       this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
       this.allowChangeContextPlayerIndex = this.currentPlayerIndex;
-    } else if (card.value === Value.WILD_DRAW_FOUR) {
-      //set active context to chosen color
+   }
+   
+   wildDrawFourCardSubmitted(card:Card)
+   {
+     //set active context to chosen color
       this.allowChangeContextPlayerIndex = this.currentPlayerIndex;
       this.discardPile.unshift(card);
       this.pendingAction = { Type: PendingActionType.DRAW_TWO, count: 4 };
+   }
+  cardSubmitted(card: Card) {
+    if (card.value === Value.SKIP) {
+      this.skipCardSubmitted(card);
+    } else if (card.value === Value.REVERSE) {
+      this.reverseCardSubmitted(card);
+    } else if (card.value === Value.DRAW_TWO) {
+      this.drawTwoCardSubmitted(card);
+    } else if (card.value === Value.WILD) {
+      this.wildCardSubmitted(card)
+    } else if (card.value === Value.WILD_DRAW_FOUR) {
+      this.wildDrawFourCardSubmitted(card);
     }
   }
 
   changeActiveContext(color: Color, player: Player) {
     if (
       (player.index === this.currentPlayerIndex &&
-        this.discardPile[0]!.value === Value.WILD) ||
-      this.discardPile[0]!.value === Value.WILD_DRAW_FOUR
+        this.discardPile[0].value === Value.WILD) ||
+      this.discardPile[0].value === Value.WILD_DRAW_FOUR
     ) {
       this.activeContext = color;
       this.allowChangeContextPlayerIndex = -1;
-      this.discardPile[0]!.color = color;
+      this.discardPile[0].color = color;
     }
     if (this.pendingAction.Type == PendingActionType.NONE) {
       this.currentPlayerIndex =
@@ -176,10 +192,10 @@ export class UnoGame {
         (((this.currentPlayerIndex + this.direction) % this.players.length) +
           this.players.length) %
         this.players.length;
-      this.players[this.currentPlayerIndex]!.myCards.push(this.drawPile.pop()!);
-      this.players[this.currentPlayerIndex]!.myCards.push(this.drawPile.pop()!);
-      this.players[this.currentPlayerIndex]!.myCards.push(this.drawPile.pop()!);
-      this.players[this.currentPlayerIndex]!.myCards.push(this.drawPile.pop()!);
+      this.players[this.currentPlayerIndex].myCards.push(this.drawPile.pop());
+      this.players[this.currentPlayerIndex].myCards.push(this.drawPile.pop());
+      this.players[this.currentPlayerIndex].myCards.push(this.drawPile.pop());
+      this.players[this.currentPlayerIndex].myCards.push(this.drawPile.pop());
       this.currentPlayerIndex =
         (((this.currentPlayerIndex + this.direction) % this.players.length) +
           this.players.length) %
@@ -192,7 +208,7 @@ export class UnoGame {
     this.cardDrawn = false;
     if (player.index === this.currentPlayerIndex) {
       if ((this.cardDrawn && card === this.drawnCard) || !this.cardDrawn) {
-        if (this.isValidMatch(card, this.discardPile[0]!)) {
+        if (this.isValidMatch(card, this.discardPile[0])) {
           player.myCards = player.myCards.filter((c) => c.id != card.id);
           if (player.myCards.length == 0) {
             this.isEnd = true;
@@ -226,8 +242,8 @@ export class UnoGame {
   checkPendingAction() {
     if (this.pendingAction.Type === PendingActionType.DRAW_TWO) {
       for (let i = 0; i < this.pendingAction.count; i++) {
-        this.players[this.currentPlayerIndex]!.myCards.push(
-          this.drawPile.pop()!,
+        this.players[this.currentPlayerIndex].myCards.push(
+          this.drawPile.pop(),
         );
       }
       this.pendingAction = { Type: PendingActionType.NONE, count: 0 };
@@ -238,10 +254,10 @@ export class UnoGame {
       if (player.myCards.length == 1 && !player.isUnoSaid) {
         let card = this.drawPile.pop();
 
-        player.myCards.push(card!);
+        player.myCards.push(card);
         card = this.drawPile.pop();
 
-        player.myCards.push(card!);
+        player.myCards.push(card);
       }
     });
   }
