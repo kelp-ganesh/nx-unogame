@@ -54,14 +54,6 @@ export class UnoGame {
     this.drawPile = cards.slice(lastCardIndex + 1, cards.length);
   }
 
-  show() {
-    console.log('discard pile', this.discardPile);
-    console.log('draw pile', this.drawPile);
-    for (let i = 0; i < this.players.length; i++) {
-      console.log('player ' + i + ' myCards:', this.players[i].myCards);
-    }
-  }
-
   timeExceeded() {
     this.cardDrawn = false;
     if (this.pendingAction.Type === PendingActionType.DRAW_TWO) {
