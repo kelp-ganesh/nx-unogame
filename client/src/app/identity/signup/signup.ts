@@ -67,9 +67,7 @@ export class SignupComponent implements OnDestroy {
             summary: 'Success',
             detail: 'Signup Successful',
           });
-          setTimeout(() => {
-            this.routerLink.navigate(['/signin']);
-          }, 1500);
+          this.routerLink.navigate(['/signin']);
         } else {
           this.messageService.add({
             severity: 'error',

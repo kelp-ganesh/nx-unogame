@@ -1,7 +1,4 @@
-@if (card.value === value.ZERO || card.value === value.ONE || card.value ===
-value.TWO || card.value === value.THREE || card.value === value.FOUR ||
-card.value === value.FIVE || card.value === value.SIX || card.value ===
-value.SEVEN || card.value === value.EIGHT || card.value === value.NINE) {
+@if (isNumericalCard(card.value)) {
 <div class="absolute inset-0 flex items-center justify-center">
   <span class="text-8xl font-black italic opacity-90 drop-shadow-md text-shadow"
     >{{ card.value }}</span

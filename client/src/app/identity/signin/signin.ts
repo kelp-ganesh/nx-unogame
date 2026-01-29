@@ -54,7 +54,7 @@ export class SigninComponent {
           summary: 'Success',
           detail: 'Signin Successful',
         });
-        setTimeout(() => this.routerLink.navigate(['/lobby']), 1500);
+       this.routerLink.navigate(['/lobby']);
       } else {
         this.messageService.add({
           severity: 'error',
