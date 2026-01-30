@@ -7,14 +7,12 @@ import {
   ISignUpRequest,
   ISignUpResponse,
 } from '@unogame/shared-lib';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
   private readonly http = inject(HttpClient);
-  private apiUrl = environment.apiUrl;
 
   onSignup({
     name,
@@ -23,7 +21,7 @@ export class LoginService {
     avatarId,
   }: ISignUpRequest): Promise<ISignUpResponse> {
     return lastValueFrom(
-      this.http.post<ISignUpResponse>(`${this.apiUrl}/auth/signup`, {
+      this.http.post<ISignUpResponse>(`api/auth/signup`, {
         name,
         email,
         password,
@@ -35,7 +33,7 @@ export class LoginService {
   onSignin({ email, password }: ISignInRequest): Promise<ISigninResponse> {
     return lastValueFrom(
       this.http.post<ISigninResponse>(
-        `${this.apiUrl}/auth/login`,
+        `api/auth/login`,
         { email, password },
         { withCredentials: true },
       ),

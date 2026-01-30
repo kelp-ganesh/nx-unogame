@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from '../users/users.module';
- 
 
 @Module({
   controllers: [AuthController],
@@ -20,7 +19,7 @@ import { UsersModule } from '../users/users.module';
       useFactory: (config: ConfigService) => ({
         secret: config.get('JWT_SECRET'),
         signOptions: {
-          expiresIn: config.get('JWT_EXPIRES_IN'),
+          expiresIn: config.get('JWT_EXPIRES_IN') || '3600s',
         },
       }),
     }),

@@ -10,15 +10,15 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { providePrimeNG } from 'primeng/config';
 import { MessageService } from 'primeng/api';
 import { SocketIoConfig, provideSocketIo } from 'ngx-socket-io';
-import { environment } from '../environments/environment';
 import Aura from '@primeuix/themes/aura';
 
 const config: SocketIoConfig = {
-  url: environment.socketUrl,
+  url: '',
   options: {
     transports: ['websocket'],
     withCredentials: true,
     autoConnect: false,
+    path: '/socket.io',
   },
 };
 

@@ -24,8 +24,29 @@
       "executor": "@nx/web:file-server",
       "options": {
         "buildTarget": "client:build",
-        "spa": true
+        "spa": true,
+        "proxyConfig": "apps/client/proxy.conf.json"
       }
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "buildTarget": "client:build",
+        "proxyConfig": "apps/client/proxy.conf.json"
+      }
+    }
+  },
+  "build": {
+    "executor": "@angular-devkit/build-angular:browser",
+    "options": {
+      "outputPath": "dist/apps/client",
+      "index": "apps/client/src/index.html",
+      "main": "apps/client/src/main.ts",
+      "polyfills": "apps/client/src/polyfills.ts",
+      "tsConfig": "apps/client/tsconfig.app.json",
+      "assets": ["apps/client/src/favicon.ico", "apps/client/src/assets"],
+      "styles": ["apps/client/src/styles.css"],
+      "scripts": []
     }
   }
 }

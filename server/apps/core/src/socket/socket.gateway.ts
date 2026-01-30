@@ -22,7 +22,6 @@ import type {
 } from '@unogame/shared-lib';
 import { SocketService } from './socket.service';
 import { Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
 import { UsersService } from '../users/users.service';
 import { UserModel } from '../model/user.model';
 
@@ -30,7 +29,8 @@ interface IAuthenticatedSocket extends Socket {
   user: IJwtPayload;
 }
 
-@WebSocketGateway(+process.env.SOCKET_PORT, {
+const port = process.env.SOCKET_PORT;
+@WebSocketGateway(Number(port) || 3002, {
   cors: {
     origin: process.env.FRONTEND_URL,
   },
